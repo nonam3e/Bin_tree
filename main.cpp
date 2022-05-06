@@ -16,22 +16,23 @@ public:
 	}
 
 };
+void delete_tree (tree_elem * curr) {
+    delete_tree (curr->m_left);
+    delete_tree (curr->m_right);
+    delete curr;
+}
+
+void print_tree (tree_elem * curr) {
+    if (curr) {
+        print_tree (curr->m_left);
+        cout << curr->m_data << " ";
+        print_tree (curr->m_right);
+    }
+}
 
 class binary_tree {
 	tree_elem * m_root;
 	int m_size;
-	void print_tree (tree_elem * curr) {
-        if (curr) {
-            print_tree (curr->m_left);
-            cout << curr->m_data << " ";
-            print_tree (curr->m_right);
-		}
-    }
-	void delete_tree (tree_elem * curr) {
-		delete_tree (curr->m_left);
-		delete_tree (curr->m_right);
-		delete curr;
-	}
 public:
 	binary_tree (int key) {
 		m_root = new tree_elem(key);
@@ -45,17 +46,17 @@ public:
 		cout << endl;
 	}
 	bool find (int key) {
-        tree_elem * curr = m_root;
-        while (curr != nullptr) {
-            if (curr->m_data == key)
-                return true;
-            else if (curr->m_data < key)
-                curr = curr->m_left;
-            else
-                curr = curr->m_right;
-        }
-        return false;
-    }
+		tree_elem * curr = m_root;
+		while (curr != nullptr) {
+			if (curr->m_data == key)
+				return true;
+			else if (curr->m_data > key)
+				curr = curr->m_left;
+			else
+				curr = curr->m_right;
+		}
+		return false;
+	}
 	void insert (int key) {
 		tree_elem * curr = m_root;
 		while (curr && curr->m_data != key) {
@@ -75,31 +76,33 @@ public:
 				curr = curr->m_right;
 		}
 	}
-    int min() {
-        tree_elem * curr = m_root;
-        while (curr->m_left != nullptr) {
-            curr = curr->m_left;
-        }
-        return curr->m_data;
-    }
-    int max() {
-        tree_elem * curr = m_root;
-        while (curr->m_right != nullptr) {
-            curr = curr->m_right;
-        }
-        return curr->m_data;
-    }
+	int min() {
+		tree_elem * curr = m_root;
+		while (curr->m_left != nullptr) {
+			curr = curr->m_left;
+		}
+		return curr->m_data;
+	}
+	int max() {
+		tree_elem * curr = m_root;
+		while (curr->m_right != nullptr) {
+			curr = curr->m_right;
+		}
+		return curr->m_data;
+	}
 	void erase (int);
 	int size() {
-        return m_size;
-    }
+		return m_size;
+	}
 };
+
 
 int main()
 {
-    int s[9] = {11,15,19,7,2,8,10,12,18 };
-    binary_tree  tree (13);
-    for (int i = 0; i < 9; i++) { tree.insert(s[i]); }
-    tree.print();
-    return 0;
+	int s[9] = {11,15,19,7,2,8,10,12,18 };
+	binary_tree tree (13);
+	for (int i = 0; i < 9; i++) { tree.insert(s[i]); }
+    if (tree.find(2) && tree.min() == 2 && tree.max() == 19 && tree.size() == 10)
+	   tree.print();
+	return 0;
 }
