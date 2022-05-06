@@ -18,8 +18,8 @@ public:
 
 };
 void delete_tree (tree_elem * curr) {
-    delete_tree (curr->m_left);
-    delete_tree (curr->m_right);
+    if (curr->m_left) delete_tree (curr->m_left);
+    if (curr->m_right) delete_tree (curr->m_right);
     delete curr;
 }
 
@@ -35,7 +35,7 @@ class binary_tree {
 	tree_elem * m_root;
 	int m_size;
 public:
-	binary_tree (int key) {
+	explicit binary_tree (int key) {
 		m_root = new tree_elem(key);
 		m_size = 1;
 	}
@@ -44,14 +44,17 @@ public:
 		delete_tree(m_root);
 		stack <tree_elem *> node_stack;
 		m_root = new tree_elem(*other.m_root);
+        m_root->m_right = nullptr;
+        m_root->m_left = nullptr;
 		m_size = 1;
 		node_stack.push(other.m_root);
 		while (!node_stack.empty()) {
-			tree_elem *temp = node_stack.top();
+			tree_elem *temp = new tree_elem(*node_stack.top());
 			this->insert(temp->m_data);
 			node_stack.pop();
+            if (temp->m_right) node_stack.push(temp->m_right);
 			if (temp->m_left) node_stack.push(temp->m_left);
-			if (temp->m_right) node_stack.push(temp->m_right);
+            delete temp;
 		}
 		return *this;
 
@@ -78,12 +81,12 @@ public:
 	void insert (int key) {
 		tree_elem * curr = m_root;
 		while (curr && curr->m_data != key) {
-			if (curr->m_data > key && curr->m_left == NULL) {
+			if (curr->m_data > key && curr->m_left == nullptr) {
 				curr->m_left = new tree_elem(key);
 				++m_size;
 				return;
 			}
-			if (curr->m_data < key && curr->m_right == NULL) {
+			if (curr->m_data < key && curr->m_right == nullptr) {
 				curr->m_right = new tree_elem(key);
 				++m_size;
 				return;
@@ -119,7 +122,7 @@ int main()
 {
 	int s[9] = {11,15,19,7,2,8,10,12,18 };
 	binary_tree tree (13);
-	for (int i = 0; i < 9; i++) { tree.insert(s[i]); }
+	for (int i : s) { tree.insert(i); }
     if (tree.find(2) && tree.min() == 2 && tree.max() == 19 && tree.size() == 10)
 	   tree.print();
 	binary_tree tree_check(3);
