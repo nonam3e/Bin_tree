@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 
 using namespace std;
 
@@ -37,6 +38,23 @@ public:
 	binary_tree (int key) {
 		m_root = new tree_elem(key);
 		m_size = 1;
+	}
+	binary_tree& operator = (const binary_tree& other) {
+		if(this == &other) return *this;
+		delete_tree(m_root);
+		stack <tree_elem *> node_stack;
+		m_root = new tree_elem(*other.m_root);
+		m_size = 1;
+		node_stack.push(other.m_root);
+		while (!node_stack.empty()) {
+			tree_elem *temp = node_stack.top();
+			this->insert(temp->m_data);
+			node_stack.pop();
+			if (temp->m_left) node_stack.push(temp->m_left);
+			if (temp->m_right) node_stack.push(temp->m_right);
+		}
+		return *this;
+
 	}
 	~binary_tree () {
 		delete_tree (m_root);
@@ -104,5 +122,10 @@ int main()
 	for (int i = 0; i < 9; i++) { tree.insert(s[i]); }
     if (tree.find(2) && tree.min() == 2 && tree.max() == 19 && tree.size() == 10)
 	   tree.print();
+	binary_tree tree_check(3);
+	tree_check = tree;
+	cout<<tree_check.size()<<endl;
+	tree_check.print();
+
 	return 0;
 }
